@@ -1,0 +1,1 @@
+En la carpeta "webapp_local" he creado en la carpeta "js" el fichero "jquery.functions_new.js" que contiene todo el código cliente. La parte servidor ha sido separada de la parte cliente y también he empezado con el patrón modular y no sé si esta hecho bien.
