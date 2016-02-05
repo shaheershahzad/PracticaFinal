@@ -14,8 +14,8 @@ var CRUD = (function(){
 					url: 'nuevo.php',
 					type: "POST",
 					data: "submit=&nombres="+nombres+"&ciudad="+ciudad+"&alternativas="+alternativas+"&telefono="+telefono+"&fecha_nacimiento="+fecha_nacimiento,
-					success: function(datos){
-						if(datos == "correcto"){
+					success: function(data){
+						if(data == "correcto"){
 							alert("Registro guardado correctamente");
 							acciones.read();
 						}else{
@@ -33,13 +33,13 @@ var CRUD = (function(){
 				url: 'consulta.php',
 				type: 'POST',
 				dataType: 'json',
-				success : function(data){
+				success: function(data){
 					var table = $("#tabla");
 					var table_html = "";
 					clientes = [];
 					for(var i in data){
 						clientes.push(data[i]);
-						table_html += "<tr id='cliente" +data[i].id +"'><td>" +data[i].nombres +"</td><td>" +data[i].ciudad +"</td><td>" +data[i].sexo +"</td><td>" +data[i].telefono +"</td><td>" +data[i].fecha_nacimiento +"</td><td><a onClick='CRUD.init.updateForm(" +data[i].id +"); return false'><img src='img/database_edit.png' title='Editar' alt='Editar' /></a></td><td><a onClick='CRUD.init.delete(" +data[i].id +"); return false'><img src='img/delete.png' title='Eliminar' alt='Eliminar' /></a></td></tr>";
+						table_html += "<tr id='cliente" +data[i].id +"'><td>" +data[i].nombres +"</td><td>" +data[i].ciudad +"</td><td>" +data[i].sexo +"</td><td>" +data[i].telefono +"</td><td>" +data[i].fechaNacimiento +"</td><td><a onClick='CRUD.init.updateForm(" +data[i].id +"); return false'><img src='img/database_edit.png' title='Editar' alt='Editar' /></a></td><td><a onClick='CRUD.init.delete(" +data[i].id +"); return false'><img src='img/delete.png' title='Eliminar' alt='Eliminar' /></a></td></tr>";
 					}
 		            table.html("<span id='nuevo'><a onclick='CRUD.init.createForm()'><img src='img/add.png' alt='Agregar dato' /></a></span><table><tr><th>NOMBRES</th><th>CIUDAD</th><th>SEXO</th><th>TELEFONO</th><th>FECHA NACIMIENTO</th><th></th><th></th></tr>" +table_html +"</table>");
 				}	
@@ -58,8 +58,8 @@ var CRUD = (function(){
 					url: 'actualizar.php',
 					type: "POST",
 					data: "submit=&nombres="+nombres+"&ciudad="+ciudad+"&alternativas="+alternativas+"&telefono="+telefono+"&fecha_nacimiento="+fecha_nacimiento+"&cliente_id="+cliente_id,
-					success: function(datos){
-						if(datos == "correcto"){
+					success: function(data){
+						if(data == "correcto"){
 							var index = $("#cliente"+id).index() - 1;
 							clientes[index].nombres = nombres;
 							clientes[index].ciudad = ciudad;
@@ -80,15 +80,17 @@ var CRUD = (function(){
 
 			delete: function(id){
 				var nombre = $("#cliente"+id +" td").html();
+				var index = $("#cliente"+id).index() - 1;
 				var msg = confirm("¿Desea eliminar a " +nombre +"?");
 				if ( msg ) {
 					$.ajax({
 						url: 'eliminar.php',
 						type: "POST",
 						data: "id="+id,
-						success: function(datos){
-							if(datos == "correcto"){
+						success: function(data){
+							if(data == "correcto"){
 								alert("El registro ha sido eliminado correctamente.");
+								clientes.splice(index,1);
 								$("#cliente"+id).remove();
 							}else{
 								alert("Error al eliminar!");
@@ -118,7 +120,7 @@ var CRUD = (function(){
 				var ciudad = clientes[index].ciudad;
 				var sexo = clientes[index].sexo;
 				var telefono = clientes[index].telefono;
-				var fecha_nacimiento = clientes[index].fecha_nacimiento;
+				var fecha_nacimiento = clientes[index].fechaNacimiento;
 
 				//Insertar los datos en el formulario
 				$('#nombres').val(nombre);

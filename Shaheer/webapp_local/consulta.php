@@ -2,9 +2,21 @@
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers:Origin,X-Requested-With, Content-Type, Accept");
 
-require('clases/cliente.class.php');
-$objCliente = new Cliente;
-$consulta = $objCliente->mostrar_clientes();
+//require('clases/cliente.class.php');
+	//include all DAO files
+	require_once('DAO/include_dao.php');
+
+	//start new transaction
+	$transaction = new Transaction();
+
+	$Tbl = DAOFactory::getClienteDAO();
+	$consulta = $Tbl->queryAll();
+
+	echo json_encode($consulta, JSON_FORCE_OBJECT);
+
+
+	/*$objCliente = new Cliente;
+	$consulta = $objCliente->mostrar_clientes();*/
 
 
 /*<script type="text/javascript">
@@ -65,18 +77,12 @@ $(document).ready(function(){
 		  </tr>
 	<?php
 */
-?>
-
-
-
-<?php
+/*
 $clientes = [];
 if($consulta) {
 	while( $cliente = mysql_fetch_array($consulta, MYSQL_ASSOC) ){
 		$clientes[]=$cliente;
 	}
 	echo json_encode($clientes, JSON_FORCE_OBJECT);
-}
+}*/
 ?>
-    
-    

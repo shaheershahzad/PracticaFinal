@@ -3,16 +3,23 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers:Origin,X-Requested-With, Content-Type, Accept");
 
 if(isset($_POST['submit'])){
-	require('clases/cliente.class.php');
+	//require('clases/cliente.class.php');
+  require_once('DAO/include_dao.php');
 
-	$nombres = htmlspecialchars(trim($_POST['nombres']));
-	$ciudad = htmlspecialchars(trim($_POST['ciudad']));
-	$sexo = htmlspecialchars(trim($_POST['alternativas']));
-	$telefono = htmlspecialchars(trim($_POST['telefono']));
-	$fecha_nacimiento = htmlspecialchars(trim($_POST['fecha_nacimiento']));
+  $cliente = new Cliente();
+
+	$cliente->nombres = htmlspecialchars(trim($_POST['nombres']));
+	$cliente->ciudad = htmlspecialchars(trim($_POST['ciudad']));
+	$cliente->sexo = htmlspecialchars(trim($_POST['alternativas']));
+	$cliente->telefono = htmlspecialchars(trim($_POST['telefono']));
+	$cliente->fechaNacimiento = htmlspecialchars(trim($_POST['fecha_nacimiento']));
 	
-	$objCliente=new Cliente;
-	if ( $objCliente->insertar(array($nombres,$ciudad,$sexo,$telefono,$fecha_nacimiento)) == true){
+	//start new transaction
+  $transaction = new Transaction();
+
+  $Tbl = DAOFactory::getClienteDAO();
+
+	if ($Tbl->insert($cliente) == true){
 		echo 'correcto';
 	}else{
 		echo 'error';
