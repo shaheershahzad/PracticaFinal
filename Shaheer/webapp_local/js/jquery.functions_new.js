@@ -16,10 +16,10 @@ var CRUD = (function(){
 					data: "submit=&nombres="+nombres+"&ciudad="+ciudad+"&alternativas="+alternativas+"&telefono="+telefono+"&fecha_nacimiento="+fecha_nacimiento,
 					success: function(data){
 						if(data == "correcto"){
-							alert("Registro guardado correctamente");
 							acciones.read();
+							$("#exito").show();
 						}else{
-							alert("Error al guardar!");
+							$("#error").show();
 						}			
 						$("#formulario").hide();
 						$("#tabla").show();
@@ -39,9 +39,9 @@ var CRUD = (function(){
 					clientes = [];
 					for(var i in data){
 						clientes.push(data[i]);
-						table_html += "<tr id='cliente" +data[i].id +"'><td>" +data[i].nombres +"</td><td>" +data[i].ciudad +"</td><td>" +data[i].sexo +"</td><td>" +data[i].telefono +"</td><td>" +data[i].fechaNacimiento +"</td><td><a onClick='CRUD.init.updateForm(" +data[i].id +"); return false'><img src='img/database_edit.png' title='Editar' alt='Editar' /></a></td><td><a onClick='CRUD.init.delete(" +data[i].id +"); return false'><img src='img/delete.png' title='Eliminar' alt='Eliminar' /></a></td></tr>";
+						table_html += "<tr id='cliente" +data[i].id +"'><td>" +data[i].nombres +"</td><td>" +data[i].ciudad +"</td><td>" +data[i].sexo +"</td><td>" +data[i].telefono +"</td><td>" +data[i].fechaNacimiento +"</td><td id='acciones'><a onClick='CRUD.init.updateForm(" +data[i].id +"); return false'><button type='button' class='btn btn-info btn-xs' alt='Editar' title='Editar'>Editar <span class='glyphicon glyphicon-edit' aria-hidden='true'></span></button></a></td><td id='acciones'><a onClick='CRUD.init.delete(" +data[i].id +"); return false'><button type='button' class='btn btn-danger btn-xs' alt='Eliminar' title='Eliminar'>Eliminar <span class='glyphicon glyphicon-remove-sign' aria-hidden='true'></span></button></a></td></tr>";
 					}
-		            table.html("<span id='nuevo'><a onclick='CRUD.init.createForm()'><img src='img/add.png' alt='Agregar dato' /></a></span><table><tr><th>NOMBRES</th><th>CIUDAD</th><th>SEXO</th><th>TELEFONO</th><th>FECHA NACIMIENTO</th><th></th><th></th></tr>" +table_html +"</table>");
+		            table.html("<a onclick='CRUD.init.createForm()'><button type='button' id='add_btn' class='btn btn-success btn-xs' alt='Añadir' title='Añadir'>Añadir <span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span></button></a></span><table class='table table-bordered'><tr><th>NOMBRES</th><th>CIUDAD</th><th>SEXO</th><th>TELEFONO</th><th>FECHA NACIMIENTO</th><th colspan='2' id='acciones'>ACCIONES</th></tr>" +table_html +"</table>");
 				}	
 				});
 			},
@@ -66,10 +66,10 @@ var CRUD = (function(){
 							clientes[index].sexo = alternativas;
 							clientes[index].telefono = telefono;
 							clientes[index].fecha_nacimiento = fecha_nacimiento;
-							alert("Registro actualizado correctamente.");
 							acciones.read();
+							$("#info").show();
 						}else{
-							alert("Error al actualizar!");
+							$("#error").show();
 						}
 						$("#formulario").hide();
 						$("#tabla").show();
@@ -81,23 +81,24 @@ var CRUD = (function(){
 			delete: function(id){
 				var nombre = $("#cliente"+id +" td").html();
 				var index = $("#cliente"+id).index() - 1;
-				var msg = confirm("¿Desea eliminar a " +nombre +"?");
-				if ( msg ) {
-					$.ajax({
-						url: 'eliminar.php',
-						type: "POST",
-						data: "id="+id,
-						success: function(data){
-							if(data == "correcto"){
-								alert("El registro ha sido eliminado correctamente.");
-								clientes.splice(index,1);
-								$("#cliente"+id).remove();
-							}else{
-								alert("Error al eliminar!");
+				bootbox.confirm("¿Desea eliminar a " +nombre +"?", function(result) {
+  					if(result){
+  						$.ajax({
+							url: 'eliminar.php',
+							type: "POST",
+							data: "id="+id,
+							success: function(data){
+								if(data == "correcto"){
+									clientes.splice(index,1);
+									$("#cliente"+id).remove();
+									$("#exito").show();
+								}else{
+									$("#error").show();
+								}
 							}
-						}
-					});
-				}
+						});
+  					}
+				}); 
 				return false;
 			},
 
