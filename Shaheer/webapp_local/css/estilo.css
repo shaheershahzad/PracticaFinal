@@ -33,7 +33,7 @@ th{
 form{
 	border: 2px solid #C0C0C0;
 	background-color: #F2F2F2;
-	width: 50%;
+	width: 345px;
 	margin: auto;
 	margin-bottom: 2%;
 }
@@ -75,5 +75,9 @@ form .text{
 }
 
 #acciones{
+	text-align: center;
+}
+
+#paginacion{
 	text-align: center;
 }

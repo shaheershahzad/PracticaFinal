@@ -17,9 +17,9 @@ var CRUD = (function(){
 					success: function(data){
 						if(data == "correcto"){
 							acciones.read();
-							$("#exito").show();
+							acciones.showSuccess();
 						}else{
-							$("#error").show();
+							acciones.showError();
 						}			
 						$("#formulario").hide();
 						$("#tabla").show();
@@ -41,7 +41,7 @@ var CRUD = (function(){
 						clientes.push(data[i]);
 						table_html += "<tr id='cliente" +data[i].id +"'><td>" +data[i].nombres +"</td><td>" +data[i].ciudad +"</td><td>" +data[i].sexo +"</td><td>" +data[i].telefono +"</td><td>" +data[i].fechaNacimiento +"</td><td id='acciones'><a onClick='CRUD.init.updateForm(" +data[i].id +"); return false'><button type='button' class='btn btn-info btn-xs' alt='Editar' title='Editar'>Editar <span class='glyphicon glyphicon-edit' aria-hidden='true'></span></button></a></td><td id='acciones'><a onClick='CRUD.init.delete(" +data[i].id +"); return false'><button type='button' class='btn btn-danger btn-xs' alt='Eliminar' title='Eliminar'>Eliminar <span class='glyphicon glyphicon-remove-sign' aria-hidden='true'></span></button></a></td></tr>";
 					}
-		            table.html("<a onclick='CRUD.init.createForm()'><button type='button' id='add_btn' class='btn btn-success btn-xs' alt='Añadir' title='Añadir'>Añadir <span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span></button></a></span><table class='table table-bordered'><tr><th>NOMBRES</th><th>CIUDAD</th><th>SEXO</th><th>TELEFONO</th><th>FECHA NACIMIENTO</th><th colspan='2' id='acciones'>ACCIONES</th></tr>" +table_html +"</table>");
+		            table.html("<a onclick='CRUD.init.createForm()'><button type='button' id='add_btn' class='btn btn-success btn-xs' alt='Añadir' title='Añadir'>Añadir <span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span></button></a></span><table class='table table-bordered table-hover'><tr><th>NOMBRES</th><th>CIUDAD</th><th>SEXO</th><th>TELEFONO</th><th>FECHA NACIMIENTO</th><th colspan='2' id='acciones'>ACCIONES</th></tr>" +table_html +"</table>");
 				}	
 				});
 			},
@@ -67,9 +67,9 @@ var CRUD = (function(){
 							clientes[index].telefono = telefono;
 							clientes[index].fecha_nacimiento = fecha_nacimiento;
 							acciones.read();
-							$("#info").show();
+							acciones.showInfo();
 						}else{
-							$("#error").show();
+							acciones.showError();
 						}
 						$("#formulario").hide();
 						$("#tabla").show();
@@ -91,9 +91,9 @@ var CRUD = (function(){
 								if(data == "correcto"){
 									clientes.splice(index,1);
 									$("#cliente"+id).remove();
-									$("#exito").show();
+									acciones.showSuccess();
 								}else{
-									$("#error").show();
+									acciones.showError();
 								}
 							}
 						});
@@ -139,6 +139,30 @@ var CRUD = (function(){
 				$("#formulario").hide();
 				$("#tabla").show();
 				return false;
+			},
+
+			showSuccess: function(){
+				var show = $("#exito");
+				show.show();
+				setTimeout(function() { 
+					show.hide(); 
+				}, 2000);
+			},
+
+			showInfo: function(){
+				var info = $("#info");
+				info.show();
+				setTimeout(function() { 
+					info.hide(); 
+				}, 2000);
+			},
+
+			showError: function(){
+				var error = $("#error");
+				error.show();
+				setTimeout(function() { 
+					error.hide(); 
+				}, 2000);
 			}
 		};
 	}());
