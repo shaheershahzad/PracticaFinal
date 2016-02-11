@@ -39,9 +39,10 @@ var CRUD = (function(){
 					clientes = [];
 					for(var i in data){
 						clientes.push(data[i]);
-						table_html += "<tr id='cliente" +data[i].id +"'><td>" +data[i].nombres +"</td><td>" +data[i].ciudad +"</td><td>" +data[i].sexo +"</td><td>" +data[i].telefono +"</td><td>" +data[i].fechaNacimiento +"</td><td id='acciones'><a onClick='CRUD.init.updateForm(" +data[i].id +"); return false'><button type='button' class='btn btn-info btn-xs' alt='Editar' title='Editar'>Editar <span class='glyphicon glyphicon-edit' aria-hidden='true'></span></button></a></td><td id='acciones'><a onClick='CRUD.init.delete(" +data[i].id +"); return false'><button type='button' class='btn btn-danger btn-xs' alt='Eliminar' title='Eliminar'>Eliminar <span class='glyphicon glyphicon-remove-sign' aria-hidden='true'></span></button></a></td></tr>";
+						table_html += "<tr rel='popover' data-img='img/add.png' id='cliente" +data[i].id +"'><td>" +data[i].nombres +"</td><td>" +data[i].ciudad +"</td><td>" +data[i].sexo +"</td><td>" +data[i].telefono +"</td><td>" +data[i].fechaNacimiento +"</td><td id='acciones'><a onClick='CRUD.init.updateForm(" +data[i].id +"); return false'><button type='button' class='btn btn-info btn-xs' alt='Editar' title='Editar'>Editar <span class='glyphicon glyphicon-edit' aria-hidden='true'></span></button></a></td><td id='acciones'><a onClick='CRUD.init.delete(" +data[i].id +"); return false'><button type='button' class='btn btn-danger btn-xs' alt='Eliminar' title='Eliminar'>Eliminar <span class='glyphicon glyphicon-remove-sign' aria-hidden='true'></span></button></a></td></tr>";
 					}
 		            table.html("<a onclick='CRUD.init.createForm()'><button type='button' id='add_btn' class='btn btn-success btn-xs' alt='Añadir' title='Añadir'>Añadir <span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span></button></a></span><table class='table table-bordered table-hover'><tr><th>NOMBRES</th><th>CIUDAD</th><th>SEXO</th><th>TELEFONO</th><th>FECHA NACIMIENTO</th><th colspan='2' id='acciones'>ACCIONES</th></tr>" +table_html +"</table>");
+					acciones.hoverImage();
 				}	
 				});
 			},
@@ -103,13 +104,15 @@ var CRUD = (function(){
 			},
 
 			createForm: function(){
+				$("#paginacion").hide();
 				$("#tabla").hide();
-		    	$('#frmClienteNuevo').each(function(){
+		    	$("#frmClienteNuevo").each(function(){
 		  			this.reset();
 				});
 				$("#frmClienteNuevo").attr('onsubmit','CRUD.init.create(); return false');
 				$("#cancelar").attr('onclick','CRUD.init.cancel(); return false');
 				$("#button").val("Enviar");
+				acciones.calendar();
 		    	$("#formulario").show();
 			},
 
@@ -130,14 +133,26 @@ var CRUD = (function(){
 				$("#telefono").val(telefono);
 				$("#fecha_nacimiento").val(fecha_nacimiento);
 
+				$("#paginacion").hide();
 				$("#tabla").hide();
 				$("#button").val("Actualizar");
+				acciones.calendar();
 				$("#formulario").show();
+			},
+
+			calendar: function(){
+				$('#fecha_nacimiento').datepicker({  
+					changeMonth: true,
+			    	changeYear: true,
+                    yearRange: '-100:+0', //+0 no permite poner una fecha mayor a la actual y -100 coge el año actual y le resta 100 años.
+			    	dateFormat: 'yy/mm/dd'
+				});
 			},
 
 			cancel: function(){
 				$("#formulario").hide();
 				$("#tabla").show();
+				$("#paginacion").show();
 				return false;
 			},
 
@@ -163,6 +178,18 @@ var CRUD = (function(){
 				setTimeout(function() { 
 					error.hide(); 
 				}, 2000);
+			},
+
+			hoverImage: function(){
+				$('tr[rel="popover"]').popover({
+				  html: true,
+				  trigger: 'hover',
+				  placement: 'left',
+				  container: 'body',
+				  content: function(){
+				  	return '<img src="'+$(this).data('img') + '" />'
+				  }
+				});
 			}
 		};
 	}());
