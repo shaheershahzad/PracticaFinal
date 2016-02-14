@@ -1,0 +1,83 @@
+@charset "utf-8";
+#exito, #error, #info{
+	display: none;
+}
+
+a{
+	text-decoration: none;
+}
+
+#contenedor{
+	width: 70%;
+	margin: auto;
+	margin-top: 2%;
+	border-radius: .9em;
+}
+
+small{
+	font-size: 9px;
+}
+
+table{
+	width: 100%;
+	border-radius: .9em;
+}
+td{
+	padding: .5em 0 .5em;
+}
+
+th{
+	padding: .5em 0 .5em;
+}
+/*
+form{
+	border: 2px solid #C0C0C0;
+	background-color: #F2F2F2;
+	width: 345px;
+	margin: auto;
+	margin-bottom: 2%;
+}
+
+form p{
+	margin: auto;
+	width: 95%;
+	margin-top: .5em;
+	margin-bottom: .3em;
+}
+
+form input{
+	border: 1px solid #CCCCCC;
+	padding: .3em;
+}
+
+form .text{
+	width: 150%;
+}*/
+
+#formulario{
+	display: none;
+}
+
+#frmClienteNuevo {
+		margin-top: 2em;
+}
+
+#calendar_link{
+	text-decoration: none;
+}
+
+#button,#cancelar{
+	margin-bottom: .5em;
+}
+
+#add_btn{
+	margin: .3em 0 .3em .3em;
+}
+
+#acciones{
+	text-align: center;
+}
+
+#paginacion{
+	text-align: center;
+}

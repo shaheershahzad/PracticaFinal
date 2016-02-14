@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Mantenimiento de Clientes</title>
+<script src="js/jquery-2.2.0.min.js" type="text/javascript"></script>
+<!--<script src="js/jquery-1.10.2.js" type="text/javascript"></script>-->
+<script src="js/jquery.functions_new.js" type="text/javascript"></script>
+<script src="js/jquery-ui.js" type="text/javascript"></script>
+<script src="js/bootbox.min.js" type="text/javascript"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link type="text/css" rel="stylesheet" href="css/estilo.css" />
+<link type="text/css" rel="stylesheet" href="css/jquery-ui.css">
+
+<script src="js/validator.js" type="text/javascript"></script>
+</head>
+<body>
+
+<div id="contenedor">
+    <div id="alerts">
+        <div class="alert alert-success fade in" id="exito">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Success!</strong> La acción ha sido realizada correctamente.
+        </div>
+        <div class="alert alert-danger fade in" id="error">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Error!</strong> La acción no se ha realizado correctamente.
+        </div>
+        <div class="alert alert-info fade in" id="info">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Info!</strong> Los datos han sido actualizados correctamente.
+        </div>
+
+        
+                        <div class="alert alert-danger text-center" style="display:none;" id="error">
+                            <strong>Adventencia: </strong>Debe completar todos los campos
+                        </div>
+                        <div class="alert alert-success text-center" style="display:none;" id="exito">
+                            <strong>Felicidades: </strong>Su registro ha sido guardado
+                        </div>  
+
+    </div>
+
+
+
+      
+
+
+    <div id="formulario">
+    	<form id="frmClienteNuevo" name="frmClienteNuevo" role="form" class="form-horizontal">
+
+
+
+    	<div class="form-group">
+    			<label for="nombres" class="control-label col-xs-4">Nombres</label>
+               <div class="col-xs-5">
+    				<input class="text form-control" type="text" name="nombres" id="nombres"  placeholder="Nombre y Apellido" onchange="validacion('nombres')" />
+                      <span class="help-block"></span>
+                        </div>
+                
+    		</div>
+
+
+
+                <div class="form-group">
+    			<label for="ciudad" class="control-label col-xs-4">Ciudad</label>
+                <div class="col-xs-5">
+    				<input class="text form-control" type="text" name="ciudad" id="ciudad" placeholder="Escriba su ciudad" onchange="validacion('ciudad')"/>
+                        <span class="help-block"></span>
+                        </div>
+                </div>
+
+    		
+
+
+    		<div class="form-group" >
+             <label  class="control-label col-xs-4">Genero:</label>
+                 <div class="col-xs-3">
+                 <label class="radio-inline">
+    		<input type="radio" name="alternativas" id="masculino" value="M" onclick="validacion('alternativas')" /> Masculino
+    	</label>
+    			<label class="radio-inline">
+    				<input type="radio" name="alternativas" id="femenino" value="F" onclick="validacion('alternativas')"/> Femenino
+    			</label>
+    		</div>
+
+    </div>
+
+
+
+    		<div class="form-group">
+    			<label for="telefono" class="control-label col-xs-4">Telefono</label>
+                <div class="col-xs-5">
+    				<input class="form-control" type="text" name="telefono" id="telefono" placeholder="numero de telefono" onchange="validacion('telefono')"/>
+                        <span class="help-block"></span>
+                    </div>
+    		</div>
+
+
+    		<div class="form-group">
+    			<label for="fecha_nacimiento" class="control-label col-xs-4">
+    			Fecha Nacimiento <span class='glyphicon glyphicon-calendar' aria-hidden='true' title='Calendario'></span></label>
+                 <div class="col-xs-5">
+    				<input type="text" class="text form-control" name="fecha_nacimiento" id="fecha_nacimiento" placeholder="Fecha de Nacimiento" onchange="validacion('fecha_nacimiento')"/>
+                            <span class="help-block"></span>
+                    </div>
+    		</div>
+
+    		<div class="form-group">
+                 <label for="codigo" class="control-label col-xs-4"></label>
+                  <div class="col-xs-7">
+    			<input  type="submit" name="submit" id="button" value="Insertar" class="btn btn-success btn-sm" onclick="verificar();"/>
+                &nbsp;
+    			<input type="button" class="cancelar btn btn-warning btn-sm" name="cancelar" id="cancelar" value="Cancelar" />
+                </div>
+    		</div>
+
+      
+    	</form>
+</div>
+
+
+
+
+    <div id="tabla" class="table-responsive">   
+    </div>
+
+    <div id="paginacion">
+        <nav>
+            <ul class="pagination">
+                <li><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+                <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
+                <li><a href="#">2</a></li>
+                <li><a href="#">3</a></li>
+                <li><a href="#">4</a></li>
+                <li><a href="#">5</a></li>
+                <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+            </ul>
+        </nav>
+            <div class="bb-alert alert alert-info" style="display:none;">
+        <span>The examples populate this alert with dummy content</span>
+    </div>
+    </div>
+</div>
+<span style="text-align:center;width:300px;margin:auto;display:block;margin-top:20px;">RibosoMatic.com</span>
+</body>
+</html>
