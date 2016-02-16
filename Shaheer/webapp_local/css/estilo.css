@@ -30,30 +30,6 @@ th{
 	padding: .5em 0 .5em;
 }
 
-form{
-	border: 2px solid #C0C0C0;
-	background-color: #F2F2F2;
-	width: 345px;
-	margin: auto;
-	margin-bottom: 2%;
-}
-
-form p{
-	margin: auto;
-	width: 95%;
-	margin-top: .5em;
-	margin-bottom: .3em;
-}
-
-form input{
-	border: 1px solid #CCCCCC;
-	padding: .3em;
-}
-
-form .text{
-	width: 150%;
-}
-
 #formulario{
 	display: none;
 }

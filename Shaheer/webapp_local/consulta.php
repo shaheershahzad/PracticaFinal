@@ -12,6 +12,12 @@ header("Access-Control-Allow-Headers:Origin,X-Requested-With, Content-Type, Acce
 	$Tbl = DAOFactory::getClienteDAO();
 	$consulta = $Tbl->queryAll();
 
+	/*$longitud = count($consulta);
+	
+	for($i=0; $i<$longitud; $i++){
+	  $consulta[$i]->apellidos = "Lopez Perez";
+    }*/
+
 	echo json_encode($consulta, JSON_FORCE_OBJECT);
 
 

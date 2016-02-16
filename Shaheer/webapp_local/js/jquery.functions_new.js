@@ -16,7 +16,7 @@ var CRUD = (function(){
 					data: "submit=&nombres="+nombres+"&ciudad="+ciudad+"&alternativas="+alternativas+"&telefono="+telefono+"&fecha_nacimiento="+fecha_nacimiento,
 					success: function(data){
 						if(data == "correcto"){
-							acciones.read();
+							acciones.read(1);
 							acciones.showSuccess();
 						}else{
 							acciones.showError();
@@ -28,22 +28,47 @@ var CRUD = (function(){
 				return false;
 			},
 
-			read: function(){
+			read: function(pn){
 	    		$.ajax({
-				url: 'consulta.php',
-				type: 'POST',
-				dataType: 'json',
-				success: function(data){
-					var table = $("#tabla");
-					var table_html = "";
-					clientes = [];
-					for(var i in data){
-						clientes.push(data[i]);
-						table_html += "<tr rel='popover' data-img='img/add.png' id='cliente" +data[i].id +"'><td>" +data[i].nombres +"</td><td>" +data[i].ciudad +"</td><td>" +data[i].sexo +"</td><td>" +data[i].telefono +"</td><td>" +data[i].fechaNacimiento +"</td><td id='acciones'><a onClick='CRUD.init.updateForm(" +data[i].id +"); return false'><button type='button' class='btn btn-info btn-xs' alt='Editar' title='Editar'>Editar <span class='glyphicon glyphicon-edit' aria-hidden='true'></span></button></a></td><td id='acciones'><a onClick='CRUD.init.delete(" +data[i].id +"); return false'><button type='button' class='btn btn-danger btn-xs' alt='Eliminar' title='Eliminar'>Eliminar <span class='glyphicon glyphicon-remove-sign' aria-hidden='true'></span></button></a></td></tr>";
-					}
-		            table.html("<a onclick='CRUD.init.createForm()'><button type='button' id='add_btn' class='btn btn-success btn-xs' alt='Añadir' title='Añadir'>Añadir <span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span></button></a></span><table class='table table-bordered table-hover'><tr><th>NOMBRES</th><th>CIUDAD</th><th>SEXO</th><th>TELEFONO</th><th>FECHA NACIMIENTO</th><th colspan='2' id='acciones'>ACCIONES</th></tr>" +table_html +"</table>");
-					acciones.hoverImage();
-				}	
+					url: 'consulta.php',
+					type: 'POST',
+					dataType: 'json',
+					success: function(data){
+						var table = $("#tabla");
+						var table_html = "";
+						clientes = [];
+						for(var i in data){
+							clientes.push(data[i]);
+							//table_html += "<tr rel='popover' data-img='profiles/1.jpg' id='cliente" +data[i].id +"'><td>" +data[i].nombres +"</td><td>" +data[i].ciudad +"</td><td>" +data[i].sexo +"</td><td>" +data[i].telefono +"</td><td>" +data[i].fechaNacimiento +"</td><td id='acciones'><a onClick='CRUD.init.updateForm(" +data[i].id +"); return false'><button type='button' class='btn btn-info btn-xs' alt='Editar' title='Editar'>Editar <span class='glyphicon glyphicon-edit' aria-hidden='true'></span></button></a></td><td id='acciones'><a onClick='CRUD.init.delete(" +data[i].id +"); return false'><button type='button' class='btn btn-danger btn-xs' alt='Eliminar' title='Eliminar'>Eliminar <span class='glyphicon glyphicon-remove-sign' aria-hidden='true'></span></button></a></td></tr>";
+						}
+
+						//Paginar
+						
+						var numero_registros_por_pagina = 3;
+						var numero_paginas = Math.ceil(clientes.length/numero_registros_por_pagina);
+						var pagina_actual = pn;
+	
+
+						$("#pagination").html("");
+						var pagination_html = "";
+						for(var c=1; c<=numero_paginas; c++){
+							if(c == pagina_actual){
+								pagination_html += "<li class='active'><a href='#' onclick='CRUD.init.read(" +c +")'>" +c +"</a></li>";
+							}else{
+								pagination_html += "<li><a href='#' onclick='CRUD.init.read(" +c +")'>" +c +"</a></li>";
+							}						
+						}
+
+						var clientesPaginados = acciones.paginate(numero_registros_por_pagina, pn);
+
+						for(var x in clientesPaginados){
+							table_html += "<tr rel='popover' data-img='profiles/1.jpg' id='cliente" +clientesPaginados[x].id +"'><td>" +clientesPaginados[x].nombres +"</td><td>" +clientesPaginados[x].ciudad +"</td><td>" +clientesPaginados[x].sexo +"</td><td>" +clientesPaginados[x].telefono +"</td><td>" +clientesPaginados[x].fechaNacimiento +"</td><td id='acciones'><a onClick='CRUD.init.updateForm(" +clientesPaginados[x].id +"); return false'><button type='button' class='btn btn-info btn-xs' alt='Editar' title='Editar'>Editar <span class='glyphicon glyphicon-edit' aria-hidden='true'></span></button></a></td><td id='acciones'><a onClick='CRUD.init.delete(" +clientesPaginados[x].id +"); return false'><button type='button' class='btn btn-danger btn-xs' alt='Eliminar' title='Eliminar'>Eliminar <span class='glyphicon glyphicon-remove-sign' aria-hidden='true'></span></button></a></td></tr>";
+						}
+						
+			            table.html("<a onclick='CRUD.init.createForm()'><button type='button' id='add_btn' class='btn btn-success btn-xs' alt='Añadir' title='Añadir'>Añadir <span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span></button></a></span><table class='table table-bordered table-hover'><tr><th>NOMBRES</th><th>CIUDAD</th><th>SEXO</th><th>TELEFONO</th><th>FECHA NACIMIENTO</th><th colspan='2' id='acciones'>ACCIONES</th></tr>" +table_html +"</table>");
+						$("#pagination").html(pagination_html);
+						acciones.hoverImage();
+					}		
 				});
 			},
 
@@ -67,7 +92,7 @@ var CRUD = (function(){
 							clientes[index].sexo = alternativas;
 							clientes[index].telefono = telefono;
 							clientes[index].fecha_nacimiento = fecha_nacimiento;
-							acciones.read();
+							acciones.read(1);
 							acciones.showInfo();
 						}else{
 							acciones.showError();
@@ -113,21 +138,39 @@ var CRUD = (function(){
 				$("#cancelar").attr('onclick','CRUD.init.cancel(); return false');
 				$("#button").val("Enviar");
 				acciones.calendar();
+				$("#button").attr('onclick','CRUD.init.verifyOnSend()');
+				$('#nombres').attr("onchange","CRUD.init.validationInput('nombres')");
+				$('#ciudad').attr("onchange","CRUD.init.validationInput('ciudad')");
+				$('#sexo').attr("onchange","CRUD.init.validationInput('sexo')");
+				$('#telefono').attr("onchange","CRUD.init.validationInput('telefono')");
+				$('#fecha_nacimiento').attr("onchange","CRUD.init.validationInput('fecha_nacimiento')");
 		    	$("#formulario").show();
 			},
 
 			updateForm: function(id){
+				var nombre, ciudad, sexo, telefono, fecha_nacimiento;
 				$("#frmClienteNuevo").attr('onsubmit','CRUD.init.update(' +id +'); return false');
 	    		$("#cancelar").attr('onclick','CRUD.init.cancel(); return false');
-				var index = $("#cliente"+id).index() - 1;
+				//var index = $("#cliente"+id).index() - 1;
+
+				$("#cliente"+id).each(function () {
+					nombre = $(this).find("td").eq(0).html();
+					ciudad = $(this).find("td").eq(1).html();
+					sexo = $(this).find("td").eq(2).html();
+					telefono = $(this).find("td").eq(3).html();
+					fecha_nacimiento = $(this).find("td").eq(4).html();
+				});
+				/*
 				var nombre = clientes[index].nombres;
+				//var apellidos = clientes[index].apellidos;
 				var ciudad = clientes[index].ciudad;
 				var sexo = clientes[index].sexo;
 				var telefono = clientes[index].telefono;
-				var fecha_nacimiento = clientes[index].fechaNacimiento;
+				var fecha_nacimiento = clientes[index].fechaNacimiento;*/
 
 				//Insertar los datos en el formulario
 				$('#nombres').val(nombre);
+				//$('#apellidos').val(apellidos);
 				$('#ciudad').val(ciudad);
 				$("input[value='" +sexo +"']").prop("checked",true);
 				$("#telefono").val(telefono);
@@ -136,8 +179,154 @@ var CRUD = (function(){
 				$("#paginacion").hide();
 				$("#tabla").hide();
 				$("#button").val("Actualizar");
+				$("#button").attr('onclick','CRUD.init.verifyOnSend()');
+				document.frmClienteNuevo.submit.disabled = false;
 				acciones.calendar();
+
+				$('#nombres').attr("onchange","CRUD.init.validationInput('nombres')");
+				$('#ciudad').attr("onchange","CRUD.init.validationInput('ciudad')");
+				$('#sexo').attr("onchange","CRUD.init.validationInput('sexo')");
+				$('#telefono').attr("onchange","CRUD.init.validationInput('telefono')");
+				$('#fecha_nacimiento').attr("onchange","CRUD.init.validationInput('fecha_nacimiento')");
 				$("#formulario").show();
+			},
+
+			clearValidation: function(){
+				$("#glypcnnombres").remove();
+			    $("#glypcnciudad").remove();
+			    $("#glypcnalternativas").remove();
+			    $("#glypcntelefono").remove();
+			    $("#glypcnfecha_nacimiento").remove();
+			    $('#nombres').parent().parent().attr("class", "form-group has-feedback");
+			    $('#ciudad').parent().parent().attr("class", "form-group has-feedback");
+			    $('#masculino').parent().parent().parent().attr("class", "form-group has-feedback");
+			    $('#telefono').parent().parent().attr("class", "form-group has-feedback");
+			    $('#fecha_nacimiento').parent().parent().attr("class", "form-group has-feedback"); 
+			    $("#formulario").hide();
+			    $("#tabla").show();
+			    $("#paginacion").show();
+			    $("span.help-block").hide();
+			    document.frmClienteNuevo.submit.disabled = false;
+			    return false;
+			},
+
+			verifyOnSend: function(){
+				var v1 = 0, v2 = 0, v3 = 0, v4 = 0, v5 = 0;
+			    v1 = acciones.validationInput('nombres');
+			    v2 = acciones.validationInput('ciudad');
+			    v3 = acciones.validationInput('alternativas');
+			    v4 = acciones.validationInput('telefono');
+			    v5 = acciones.validationInput('fecha_nacimiento');
+
+                if (v1===false || v2===false || v3===false || v4===false || v5===false) {    
+                    document.frmClienteNuevo.submit.disabled = true;
+                }else{               
+                   document.frmClienteNuevo.submit.disabled = false;
+                   acciones.clearValidation();          
+             	}
+			},
+
+			validationInput: function(campo){
+				var a=0;           
+	            if (campo==='nombres'){
+	                nombre = document.getElementById(campo).value;
+	                if( nombre == null || nombre.length == 0 || !/^[a-z][a-z]/.test(nombre) ) {             
+	                    $("#glypcn"+campo).remove();
+	                    $('#'+campo).parent().parent().attr("class", "form-group has-error has-feedback");
+	                    $('#'+campo).parent().children('span').text("Error").show();
+	                    $('#'+campo).parent().append("<span id='glypcn"+campo+"' class='glyphicon glyphicon-remove form-control-feedback'></span>");
+	                    return false;
+
+	                }else{
+	                    $("#glypcn"+campo).remove();
+	                    $('#'+campo).parent().parent().attr("class", "form-group has-success has-feedback");
+	                    $('#'+campo).parent().children('span').hide();
+	                    $('#'+campo).parent().append("<span id='glypcn"+campo+"' class='glyphicon glyphicon-ok form-control-feedback'></span>");
+	                    document.frmClienteNuevo.submit.disabled=false;
+	                    return true;
+	                } 
+	            }
+
+	            if (campo==='ciudad'){
+	                city = document.getElementById(campo).value;
+	                if( city == null || city.length == 0 || !/^[a-z][a-z]/.test(city) ) {
+
+	                    $("#glypcn"+campo).remove();
+	                    $('#'+campo).parent().parent().attr("class", "form-group has-error has-feedback");
+	                    $('#'+campo).parent().children('span').text("Error").show();
+	                    $('#'+campo).parent().append("<span id='glypcn"+campo+"' class='glyphicon glyphicon-remove form-control-feedback'></span>");
+	                    return false;
+
+	                }
+	                else{
+	                    $("#glypcn"+campo).remove();
+	                    $('#'+campo).parent().parent().attr("class", "form-group has-success has-feedback");
+	                    $('#'+campo).parent().children('span').hide();
+	                    $('#'+campo).parent().append("<span id='glypcn"+campo+"' class='glyphicon glyphicon-ok form-control-feedback'></span>");
+	                    document.frmClienteNuevo.submit.disabled=false;
+	                    return true;
+
+	                } 
+	            }
+
+	            if (campo==='telefono'){
+	                telef = document.getElementById(campo).value;
+	                if(isNaN(telef) || telef == null || telef.length == 0){
+	                // if( !(/^\d{9}$/.test(telef)) ) { //valida que tenga nueve digitos y sin espacios
+	                    $("#glypcn"+campo).remove();
+	                    $('#'+campo).parent().parent().attr("class", "form-group has-error has-feedback");
+	                    $('#'+campo).parent().children('span').text("Error").show();
+	                    $('#'+campo).parent().append("<span id='glypcn"+campo+"' class='glyphicon glyphicon-remove form-control-feedback'></span>");
+	                    return false;
+	                }else{
+	                    $("#glypcn"+campo).remove();
+	                    $('#'+campo).parent().parent().attr("class", "form-group has-success has-feedback");
+	                    $('#'+campo).parent().children('span').hide();
+	                    $('#'+campo).parent().append("<span id='glypcn"+campo+"' class='glyphicon glyphicon-ok form-control-feedback'></span>");
+	                    document.frmClienteNuevo.submit.disabled=false;
+	                    return true;
+	                }
+	            }
+
+		        if (campo==='alternativas'){  //RADIOBUTTONS
+		            opciones = document.getElementsByName(campo);
+		            var seleccionado = false;
+		            for(var i=0; i<opciones.length; i++) {    
+		            	if(opciones[i].checked) {
+			                seleccionado = true;
+			                break;
+		            	}
+		        	}
+
+			        if(!seleccionado) {
+			            $('#masculino').parent().parent().parent().attr("class", "form-group has-error has-feedback");
+			            return false;
+			        }else{
+			            $('#masculino').parent().parent().parent().attr("class", "form-group has-success");
+			            document.frmClienteNuevo.submit.disabled=false;
+			            return true;
+	        		}
+    			}
+
+			    if (campo==='fecha_nacimiento'){
+			        fecha = document.getElementById(campo).value;
+			        var RegExPattern1 = /^\d{4}\/\d{2}\/\d{2}$/; // patron yyyy/mm/dd
+			        var RegExPattern2 = /^\d{4}\-\d{2}\-\d{2}\ \d{2}\:\d{2}\:\d{2}$/;
+			        if ((fecha.match(RegExPattern1)) && (fecha!='') && (fecha.match(RegExPattern2))) {
+			            $("#glypcn"+campo).remove();
+				        $('#'+campo).parent().parent().attr("class", "form-group has-error has-feedback");
+				        $('#'+campo).parent().children('span').text("Error").show();
+				        $('#'+campo).parent().append("<span id='glypcn"+campo+"' class='glyphicon glyphicon-remove form-control-feedback'></span>");
+				        return false;            
+			        }else{
+				        $("#glypcn"+campo).remove();
+			            $('#'+campo).parent().parent().attr("class", "form-group has-success has-feedback");
+			            $('#'+campo).parent().children('span').hide();
+			            $('#'+campo).parent().append("<span id='glypcn"+campo+"' class='glyphicon glyphicon-ok form-control-feedback'></span>");
+			            document.frmClienteNuevo.submit.disabled=false;
+			            return true;
+			        } 
+			    }
 			},
 
 			calendar: function(){
@@ -150,6 +339,7 @@ var CRUD = (function(){
 			},
 
 			cancel: function(){
+				acciones.clearValidation();
 				$("#formulario").hide();
 				$("#tabla").show();
 				$("#paginacion").show();
@@ -182,14 +372,22 @@ var CRUD = (function(){
 
 			hoverImage: function(){
 				$('tr[rel="popover"]').popover({
-				  html: true,
-				  trigger: 'hover',
-				  placement: 'left',
-				  container: 'body',
-				  content: function(){
-				  	return '<img src="'+$(this).data('img') + '" />'
-				  }
+					html: true,
+					trigger: 'hover',
+					placement: 'left',
+					container: 'body',
+					content: function(){
+						return '<img src="'+$(this).data('img') + '" />'
+					}
 				});
+			},
+
+			paginate: function(size,page){
+				var rowsPerPage = size;
+				var pageNum = page;
+				var start = rowsPerPage * (page - 1);
+				var end = start + rowsPerPage;
+				return clientes.slice(start,end);
 			}
 		};
 	}());
@@ -200,7 +398,7 @@ var CRUD = (function(){
 }());
 
 $(document).ready(function(){
-	CRUD.init.read();
+	CRUD.init.read(1);
 });
 
     /*var clientes;
