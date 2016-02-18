@@ -95,6 +95,7 @@ var CRUD = (function(){
 									clientes.splice(index,1);
 									$("#cliente"+id).remove();
 									acciones.showSuccess();
+									acciones.read();
 								}else{
 									acciones.showError();
 								}
