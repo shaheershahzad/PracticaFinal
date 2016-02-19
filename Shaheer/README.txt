@@ -1,1 +1,1 @@
-La paginación está funcionando al 100%. Falta mejorar la validación.
+Paginación completada con los botones de Anterior y Siguiente. La subida de imagen, la edición de misma y el guardar hechos completamente.

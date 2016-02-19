@@ -9,13 +9,21 @@ var CRUD = (function(){
 				var alternativas = $("input[name^='alternativas']:checked").val();
 				var telefono = $("#telefono").val();
 				var fecha_nacimiento = $("#fecha_nacimiento").val();
+				if($("#imagen").val() != ""){
+					var image = $("#imagen").val().split("\\");
+					var storedImage = image[2] = telefono+".jpg";
+				}else{
+					var storedImage = "";
+				}
 
+				console.log(storedImage);
 				$.ajax({
 					url: 'nuevo.php',
 					type: "POST",
-					data: "submit=&nombres="+nombres+"&ciudad="+ciudad+"&alternativas="+alternativas+"&telefono="+telefono+"&fecha_nacimiento="+fecha_nacimiento,
+					data: "submit=&nombres="+nombres+"&ciudad="+ciudad+"&alternativas="+alternativas+"&telefono="+telefono+"&fecha_nacimiento="+fecha_nacimiento+"&imagen="+storedImage,
 					success: function(data){
 						if(data == "correcto"){
+							acciones.uploadImage(storedImage);
 							acciones.read();
 							acciones.showSuccess();
 						}else{
@@ -55,13 +63,20 @@ var CRUD = (function(){
 				var alternativas = $("input[name^='alternativas']:checked").val();
 				var telefono = $("#telefono").val();
 				var fecha_nacimiento = $("#fecha_nacimiento").val();
+				if($("#imagen").val() != ""){
+					var image = $("#imagen").val().split("\\");
+					var storedImage = image[2] = cliente_id+".jpg";
+				}else{
+					var storedImage = "";
+				}
 
 				$.ajax({
 					url: 'actualizar.php',
 					type: "POST",
-					data: "submit=&nombres="+nombres+"&ciudad="+ciudad+"&alternativas="+alternativas+"&telefono="+telefono+"&fecha_nacimiento="+fecha_nacimiento+"&cliente_id="+cliente_id,
+					data: "submit=&nombres="+nombres+"&ciudad="+ciudad+"&alternativas="+alternativas+"&telefono="+telefono+"&fecha_nacimiento="+fecha_nacimiento+"&imagen="+storedImage+"&cliente_id="+cliente_id,
 					success: function(data){
 						if(data == "correcto"){
+							acciones.uploadImage(storedImage);
 							var index = $("#cliente"+id).index() - 1;
 							clientes[index].nombres = nombres;
 							clientes[index].ciudad = ciudad;
@@ -92,10 +107,10 @@ var CRUD = (function(){
 							data: "id="+id,
 							success: function(data){
 								if(data == "correcto"){
+									acciones.read();
 									clientes.splice(index,1);
 									$("#cliente"+id).remove();
 									acciones.showSuccess();
-									acciones.read();
 								}else{
 									acciones.showError();
 								}
@@ -143,6 +158,7 @@ var CRUD = (function(){
 				var inputCiudad = $('#ciudad');
 				var inputTelefono = $('#telefono');
 				var inputFechaNacimiento = $('#fecha_nacimiento');
+				var inputProfileImage = $("input[type='file']");
 
 				var nombre, ciudad, sexo, telefono, fecha_nacimiento;
 				$("#frmClienteNuevo").attr('onsubmit','CRUD.init.update(' +id +'); return false');
@@ -163,7 +179,8 @@ var CRUD = (function(){
 				var ciudad = clientes[index].ciudad;
 				var sexo = clientes[index].sexo;
 				var telefono = clientes[index].telefono;
-				var fecha_nacimiento = clientes[index].fechaNacimiento;*/
+				var fecha_nacimiento = clientes[index].fechaNacimiento;
+				*/
 
 				//Insertar los datos en el formulario
 				inputNombres.val(nombre);
@@ -354,7 +371,7 @@ var CRUD = (function(){
 				var show = $("#exito");
 				show.show();
 				setTimeout(function() { 
-					show.hide(); 
+					show.fadeOut('slow'); 
 				}, 2000);
 			},
 
@@ -363,7 +380,7 @@ var CRUD = (function(){
 				var info = $("#info");
 				info.show();
 				setTimeout(function() { 
-					info.hide(); 
+					info.fadeOut('slow'); 
 				}, 2000);
 			},
 
@@ -372,7 +389,7 @@ var CRUD = (function(){
 				var error = $("#error");
 				error.show();
 				setTimeout(function() { 
-					error.hide(); 
+					error.fadeOut('slow');
 				}, 2000);
 			},
 
@@ -383,9 +400,25 @@ var CRUD = (function(){
 					trigger: 'hover',
 					placement: 'left',
 					container: 'body',
+					delay: {show: 500, hide: 100},
 					content: function(){
-						return '<img src="'+$(this).data('img') + '" />'
+						return '<img width="100px" height="100px" src="'+$(this).data('img') + '" />'
 					}
+				});
+			},
+
+			//Guardamos la foto en la carpeta
+			uploadImage: function(image){
+				var formData = new FormData();  
+				formData.append('file', $('input[type=file]')[0].files[0]);
+				formData.append('fileName',image);
+
+				$.ajax({
+		  			url: 'upload.php',
+		  			data: formData,
+		  			processData: false,
+		  			contentType: false,
+		  			type: 'POST'
 				});
 			},
 
@@ -404,6 +437,13 @@ var CRUD = (function(){
 				var end = start + rowsPerPage;
 				var clientesPaginados = clientes.slice(start,end);
 
+				//Botón de Previous
+				if(pageNum <= 1){
+					pagination_html = '<li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>';
+				}else{
+					pagination_html = '<li><a href="#" aria-label="Previous" onclick="CRUD.init.paginate(' +(pageNum - 1) +')"><span aria-hidden="true">&laquo;</span></a></li>';
+				}
+
 				for(var c = 1; c <= totalPages; c++){
 					if(c == pageNum){
 						pagination_html += "<li class='active'><a href='#' onclick='CRUD.init.paginate(" +c +")'>" +c +"</a></li>";
@@ -412,8 +452,18 @@ var CRUD = (function(){
 					}						
 				}
 
+				//Botón de Next
+				if(pageNum >= totalPages){
+					pagination_html += '<li class="disabled"><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>';
+				}else{
+					pagination_html += '<li><a href="#" aria-label="Next" onclick="CRUD.init.paginate(' +(pageNum + 1) +')"><span aria-hidden="true">&raquo;</span></a></li>';
+				}
+
 				for(var x in clientesPaginados){
-					table_html += ("<tr rel='popover' data-img='profiles/1.jpg' id='cliente" +clientesPaginados[x].id +"'>")+
+					if(clientesPaginados[x].imagen == ""){
+							clientesPaginados[x].imagen = "noImage.jpg"
+					}
+					table_html += ("<tr rel='popover' data-img='profiles/" +clientesPaginados[x].imagen +"' id='cliente" +clientesPaginados[x].id +"'>")+
 										("<td>" +clientesPaginados[x].nombres +"</td>")+
 										("<td>" +clientesPaginados[x].ciudad +"</td>")+
 										("<td>" +clientesPaginados[x].sexo +"</td>")+

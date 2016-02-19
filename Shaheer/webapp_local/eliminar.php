@@ -18,9 +18,4 @@ require_once('DAO/include_dao.php');
 	}else{
 		echo "error";
 	}
-
-/*$objCliente=new Cliente;
-if( $objCliente->eliminar($cliente_id) == true){
-	
-}*/
 ?>
